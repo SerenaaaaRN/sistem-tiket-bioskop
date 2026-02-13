@@ -1,11 +1,9 @@
 package repository;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import model.Tiket;
-import src.model.Movie;
 
 public class TikeRepository {
     private List<Tiket> tikets = new ArrayList<>();
@@ -37,4 +35,28 @@ public class TikeRepository {
         return tikets;
 
     }
+
+    public void addTiket(Tiket tiket){
+        tikets.add(tiket);
+    }
+
+    public List<Tiket> getAllTiket(){
+        return tikets;
+    }
+
+    public List<Tiket> findByUsername(String username){
+
+        List<Tiket> hasil = new ArrayList<>();
+
+        for(Tiket t : tikets){
+            if(t.getUser() != null &&
+               t.getUser().getUsername().equals(username)){
+
+                hasil.add(t);
+            }
+        }
+
+        return hasil;
+    }
+
 }
