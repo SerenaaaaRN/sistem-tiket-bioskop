@@ -3,7 +3,7 @@ import model.*;
 public class Main {
     public static void main(String[] args) {
 
-        User u1 = new User("trional", "rahasia123", 100000, "Customer");
+        User u1 = new User("trional", "rahasia123", 100000);
         Movie m1 = new Movie(1, "Doraemon: Stand By Me", 120, "Animasi");
         Studio s1 = new Studio(1, "Studio 1 - CGV", 50, "Reguler");
         Schedule sch1 = new Schedule(101, m1, s1, "19:00 WIB");

@@ -4,14 +4,12 @@ public class User {
     private String username;
     private String password;
     private int saldo;
-    private String role;
 
     // Constructor
-    public User(String username, String password, int saldo, String role) {
+    public User(String username, String password, int saldo) {
         this.username = username;
         this.saldo = saldo;
         this.password = password;
-        this.role = role;
     }
 
     // getter setter
@@ -36,15 +34,10 @@ public class User {
     }
 
     public void setSaldo(int saldo) {
-        this.saldo = saldo;
+        if (saldo > 0) {
+            this.saldo = saldo;
+        }else{
+            System.out.println("Error. Saldo tidak boleh negatif");
+        }
     }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
 }
