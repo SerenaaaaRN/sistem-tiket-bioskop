@@ -1,5 +1,7 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -19,8 +21,7 @@ public class MovieService {
     }
 
     public List<Movie> filterByGenre(String genre){
-        List<Movie> movieByGenre = seluruhMovie.stream().filter(movie -> movie.getGenre().equals(genre)).collect(Collectors.toList());
+        List<Movie> movieByGenre = seluruhMovie.stream().filter(movie -> movie.getGenre().equalsIgnoreCase(genre)).collect(Collectors.toList());
         return movieByGenre;
     }
-    
 }

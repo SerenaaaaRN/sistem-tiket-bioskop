@@ -13,9 +13,9 @@ public class MovieRepository {
         Movie movie1 = new Movie(1, "Stand by Me Doraemon", 120, "Animasi");
         Movie movie2 = new Movie(2, "Avatar : Fire and Ash", 200, "Science Fiction");
         Movie movie3 = new Movie(3, "Stand by Me Doraemon", 120, "Animasi");
-        Movie movie4 = new Movie(4, "Stand by Me Doraemon", 120, "Animasi");
+        Movie movie4 = new Movie(4, "Interstellar", 120, "Science Fiction");
         Movie movie5 = new Movie(5, "Stand by Me Doraemon", 120, "Animasi");
-        movieList.addAll(Arrays.asList(movie1, movie2, movie3, movie4, movie4, movie5));
+        movieList.addAll(Arrays.asList(movie1, movie2, movie3, movie4, movie5));
 
     }
 
