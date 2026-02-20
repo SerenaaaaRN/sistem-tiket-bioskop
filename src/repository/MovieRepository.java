@@ -19,7 +19,7 @@ public class MovieRepository {
 
     }
 
-    public Movie finMovie(String namaFilm) {
+    public Movie findMovie(String namaFilm) {
         for (Movie m : movieList) {
             if (m.getNamaFilm().equals(namaFilm)) {
                 return m;
@@ -28,7 +28,7 @@ public class MovieRepository {
         return null;
     }
 
-    public List<Movie> getAllMovies(){
+    public List<Movie> getAllMovies() {
         return movieList;
     }
 }

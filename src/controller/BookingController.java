@@ -1,27 +1,38 @@
 package controller;
+
 import model.Customer;
 import model.Schedule;
+import model.Tiket;
+import repository.TiketRepository;
 import service.BookingService;
 
 public class BookingController {
-    // nanti untuk alur booking
-    private BookingService bookingService;
 
-    public BookingController(BookingService bookingService){
+    private BookingService bookingService;
+    private TiketRepository tiketRepo;
+
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 
-    public boolean pesanTiket(Customer customer, Schedule schedule, String seat, int harga){
-
-        boolean berhasil = bookingService.pesanTiket(customer, schedule, seat, harga);
-
-        if(!berhasil){
-            System.out.println("Gagal memesan tiket!");
+    public boolean pesanTiket(Customer customer, Schedule schedule, String seat, int harga) {
+        if (!bookingService.isSeatAvailable(schedule, seat)) {
             return false;
         }
+        if (customer.getSaldo() < harga) {
+            return false;
+        }
+        customer.setSaldo(customer.getSaldo() - harga);
 
-        System.out.println("Tiket berhasil dipesan!");
+        Tiket tiketBaru = new Tiket(
+                tiketRepo.getAllTiket().size() + 1,
+                customer,
+                schedule,
+                seat,
+                harga);
+
+        tiketRepo.addTiket(tiketBaru);
+
         return true;
     }
 }
-
