@@ -28,4 +28,10 @@ public abstract class User {
     public void setSaldo(int saldo) {
         this.saldo = saldo;
     }
+
+    public void addSaldo(int jml) {
+        if (jml < 0) {
+            this.saldo += jml;
+        }
+    }
 }

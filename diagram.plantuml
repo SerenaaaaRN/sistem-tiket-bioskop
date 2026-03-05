@@ -14,6 +14,7 @@ package controller {
         + logout(): void
         + register(username: String, password: String, saldo: int, role: String): boolean
         + getCurrentUser(): User
+        + topUp(jml: int): boolean
     }
 
     class BookingController {
@@ -21,6 +22,8 @@ package controller {
         + BookingController(repo: TiketRepository)
         + isSeatAvailable(schedule: Schedule, seat: String): boolean
         + pesanTiket(customer: Customer, schedule: Schedule, seat: String, harga: int): boolean
+        + getTiketByUsername(username: String): List<Tiket>
+        + hitungKursiTersedia(sch: Schedule): integer
     }
 
     class ScheduleController {
@@ -37,6 +40,7 @@ package controller {
         + addFilm(namaFilm: String, durasi: int, genre: String): boolean
         + deleteFilm(namaFilm: String): boolean
         + filterByGenre(genre: String): List<Movie>
+        + getMovieByName(name: String): Movie
     }
 }
 
@@ -51,7 +55,9 @@ package repository {
     class TiketRepository {
         - tikets: List<Tiket>
         + addTiket(tiket: Tiket): void
+        + findTiket(dataTiket: String): Tiket
         + getAllTiket(): List<Tiket>
+        + findByUsername(username: String): List<Tiket>
     }
 
     class ScheduleRepository {
@@ -81,6 +87,7 @@ package model {
         + getPassword(): String
         + getSaldo(): int
         + setSaldo(saldo: int): void
+        + addSaldo(jml: int): void
     }
 
     class Admin {

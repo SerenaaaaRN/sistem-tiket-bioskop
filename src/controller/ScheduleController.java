@@ -19,7 +19,7 @@ public class ScheduleController {
         }
 
         for (Schedule s : schRepo.getAllSchedule()) {
-            if (s.getStudio().getNamaStudio() == std.getNamaStudio() && s.getJamTayang().equalsIgnoreCase(jamTayang)) {
+            if (s.getStudio().getNamaStudio().equals(std.getNamaStudio()) && s.getJamTayang().equalsIgnoreCase(jamTayang)){
                 System.out.println("Studio sudah dipakai di jam tayang tersebut");
                 return false;
             }

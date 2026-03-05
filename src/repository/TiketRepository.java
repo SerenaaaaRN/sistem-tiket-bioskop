@@ -3,25 +3,13 @@ package repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Schedule;
 import model.Tiket;
-import model.User;
 
 public class TiketRepository {
     private List<Tiket> tikets = new ArrayList<>();
 
-    public void addTiket() {
-        UserRepository custRepo = new UserRepository();
-        ScheduleRepository schRepo = new ScheduleRepository();
-
-        List<User> custs = custRepo.getAllUsers();
-        List<Schedule> schedules = schRepo.getAllSchedule();
-
-        tikets.add(new Tiket(custs.get(0), schedules.get(0), "A-10", 45000));
-        tikets.add(new Tiket(custs.get(1), schedules.get(1), "B-12", 45000));
-        tikets.add(new Tiket(custs.get(2), schedules.get(2), "D-7", 45000));
-        tikets.add(new Tiket(custs.get(4), schedules.get(3), "F-18", 60000));
-        tikets.add(new Tiket(custs.get(5), schedules.get(4), "G-9", 60000));
+    public void addTiket(Tiket tiket) {
+        tikets.add(tiket);
     }
 
     public Tiket findTiket(String datatiket) {
@@ -31,10 +19,6 @@ public class TiketRepository {
             }
         }
         return null;
-    }
-
-    public void addTiket(Tiket tiket) {
-        tikets.add(tiket);
     }
 
     public List<Tiket> getAllTiket() {

@@ -24,14 +24,25 @@ public class BookingController {
         return true;
     }
 
-    public boolean pesanTiket(Customer cust, Schedule sch, String seat, int harga) {
+    public boolean pesanTiket(Customer cust, Schedule sch, String seat) {
         if (!isSeatAvailable(sch, seat)) {
             System.out.println("Kursi sudah terisi!");
             return false;
         }
 
+        int harga = 0;
+        String tipe = sch.getStudio().getTipeStudio().toLowerCase();
+
+        if (tipe.equals("reguler")) {
+            harga = 35000;
+        } else if (tipe.equals("premium") || tipe.equals("imax")) {
+            harga = 50000;
+        } else if (tipe.equals("vip")) {
+            harga = 100000;
+        }
+
         if (cust.getSaldo() < harga) {
-            System.out.println("Saldo tidak mencukupi!");
+            System.out.println("Saldo tidak mencukupi! Harga: Rp" + harga + ", Saldo anda: Rp" + cust.getSaldo());
             return false;
         }
 
@@ -45,5 +56,16 @@ public class BookingController {
 
     public List<Tiket> getTiketByUsername(String username) {
         return tiketRepo.findByUsername(username);
+    }
+
+    public int hitungKursiTersedia(Schedule sch) {
+        int count = 0;
+
+        for (Tiket t : tiketRepo.getAllTiket()) {
+            if (t.getJadwalFilm().equals(sch)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

@@ -13,6 +13,7 @@ public class AuthController {
         this.userRepo = userRepo;
     }
 
+    // handle fungsi login
     public User login(String username, String password) {
         User user = userRepo.findByUsername(username);
 
@@ -40,6 +41,7 @@ public class AuthController {
         }
     }
 
+    // fungsi untuk regisrasi user baru daftar
     public boolean register(String username, String password, int saldo, String role) {
         if (userRepo.findByUsername(username) != null) {
             System.out.println("Username sudah ada!");
@@ -60,6 +62,14 @@ public class AuthController {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    //fungsi untuk user topup
+    public boolean topUp(int jml) {
+        if (currentUser != null) {
+            currentUser.setSaldo(currentUser.getSaldo() + jml);
+        }
+        return false;
     }
 
 }

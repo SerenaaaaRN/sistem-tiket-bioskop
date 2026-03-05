@@ -4,16 +4,25 @@
  */
 package view.admin;
 
+import controller.MovieController;
+import controller.ScheduleController;
+import view.MainFrame;
+
 /**
  *
  * @author Rillah
  */
 public class AdminPanel extends javax.swing.JPanel {
-
+    private MainFrame mainFrame;
+    private MovieController movieCtrl;
+    private ScheduleController schCtrl;
     /**
      * Creates new form AdminPanel
      */
-    public AdminPanel() {
+    public AdminPanel(MainFrame mainFrame, MovieController movieCtrl, ScheduleController schCtrl) {
+        this.mainFrame = mainFrame;
+        this.movieCtrl = movieCtrl;
+        this.schCtrl = schCtrl;
         initComponents();
     }
 

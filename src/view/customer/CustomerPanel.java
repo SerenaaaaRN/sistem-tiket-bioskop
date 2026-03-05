@@ -4,16 +4,28 @@
  */
 package view.customer;
 
+import controller.BookingController;
+import controller.MovieController;
+import controller.ScheduleController;
+import view.MainFrame;
+
 /**
  *
  * @author Rillah
  */
 public class CustomerPanel extends javax.swing.JPanel {
+    private MainFrame mainFrame;
+    private MovieController movieCtrl;
+    private ScheduleController schCtrl;
+    private BookingController bookCtrl;
 
     /**
      * Creates new form CustomerPanel
      */
-    public CustomerPanel() {
+    public CustomerPanel(MainFrame mainFrame, MovieController movieCtrl, ScheduleController schCtrl, BookingController bookCtrl) {
+        this.movieCtrl = movieCtrl;
+        this.schCtrl = schCtrl;
+        this.bookCtrl = bookCtrl;
         initComponents();
     }
 

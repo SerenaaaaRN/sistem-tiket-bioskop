@@ -48,4 +48,13 @@ public class MovieController {
         return movieRepo.getAllMovies();
     }
 
+    public Movie getMovieByName(String name) {
+        for (Movie m : movieRepo.getAllMovies()) {
+            if (m.getNamaFilm().equalsIgnoreCase(name)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
 }
