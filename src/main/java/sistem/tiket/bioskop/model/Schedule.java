@@ -38,4 +38,17 @@ public class Schedule {
         this.jamTayang = jamTayang;
     }
 
+    public int getHarga() {
+        if (studio == null || studio.getTipeStudio() == null)
+            return 45000;
+        String tipe = studio.getTipeStudio().toLowerCase();
+        if (tipe.equals("reguler"))
+            return 45000;
+        if (tipe.equals("premium") || tipe.equals("imax"))
+            return 75000;
+        if (tipe.equals("vip"))
+            return 120000;
+        return 45000;
+    }
+
 }

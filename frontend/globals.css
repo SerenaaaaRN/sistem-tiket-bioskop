@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
   --bg-dark: #080808;
   --bg-card: #141414;
@@ -6,7 +8,7 @@
   --text-main: #f5f5f1;
   --text-muted: #a6a6a6;
   --border-color: #333333;
-  --font-main: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-main: "Inter", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {

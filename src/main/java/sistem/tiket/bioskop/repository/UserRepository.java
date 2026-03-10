@@ -34,6 +34,10 @@ public class UserRepository {
         users.add(user);
     }
 
+    public boolean deleteUser(String username) {
+        return users.removeIf(u -> u.getUsername().equals(username));
+    }
+
     public List<User> getAllUsers() {
         return users;
     }

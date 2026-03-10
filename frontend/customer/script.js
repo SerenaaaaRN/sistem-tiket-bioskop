@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:8080/api";
-
 let user = JSON.parse(localStorage.getItem("user"));
 
+// cek kalo user udah gaada maka lempar ke logout
 if (!user || user.role !== "customer") window.location.href = "../login/login.html";
 
 function updateHeader() {
@@ -10,12 +10,13 @@ function updateHeader() {
 }
 updateHeader();
 
+// Logout
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.removeItem("user");
   window.location.href = "../login/login.html";
 });
 
-// Tabs
+// Tab Switcher
 function switchTab(tab) {
   document.getElementById("viewBrowse").classList.toggle("hidden", tab !== "browse");
   document.getElementById("viewTickets").classList.toggle("hidden", tab !== "tickets");
@@ -26,7 +27,7 @@ function switchTab(tab) {
   else loadTickets();
 }
 
-// fungsi untuk load seluruh schedules di halaman customer
+// load jadwal film fetch dari backend
 async function loadSchedules() {
   try {
     const res = await fetch(`${API_URL}/schedules`);
@@ -34,91 +35,104 @@ async function loadSchedules() {
     const grid = document.getElementById("scheduleGrid");
     grid.innerHTML = "";
 
-    const hargaMap = { Reguler: 45000, Premium: 75000, VIP: 120000 };
-
     if (!result.data || result.data.length === 0) {
       grid.innerHTML =
-        '<p class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 50px; font-size: 1.2rem;">Belum ada jadwal tayang saat ini.</p>';
+        '<p class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 50px;">Belum ada jadwal tayang.</p>';
       return;
     }
 
     result.data.forEach((sch) => {
-      const harga = hargaMap[sch.studio.tipeStudio] || 45000;
+      const harga = sch.harga;
       grid.innerHTML += `
-                <div class="card">
-                    <h4>${sch.movie.namaFilm}</h4>
-                    <span class="badge">${sch.movie.genre}</span>
-                    <p class="text-muted" style="font-size: 0.9rem;">${sch.movie.durasi} Menit</p>
-                    <hr style="border-color: var(--border-color); margin: 15px 0;">
-                    <div class="flex-between">
-                        <span>${sch.studio.namaStudio} <br><small style="color: var(--cinematic-yellow)">Jam: ${
-        sch.jamTayang
-      }</small></span>
-                        <div class="text-right">
-                            <strong class="price">Rp ${harga.toLocaleString("id-ID")}</strong><br>
-                            <button class="btn-sm" style="margin-top: 10px;" onclick="openModal('${
-                              sch.movie.namaFilm
-                            }', '${sch.studio.namaStudio}', '${sch.jamTayang}', ${harga})">BELI</button>
+                <div class="movie-card">
+                    <div class="card-visual">
+                        <span class="badge-genre">${sch.movie.genre}</span>
+                        <span class="duration-tag">${sch.movie.durasi}m</span>
+                    </div>
+                    <div class="card-details">
+                        <h4 class="movie-title">${sch.movie.namaFilm}</h4>
+                        <div class="info-row">
+                            <div class="info-group">
+                                <label>STUDIO</label>
+                                <span>${sch.studio.namaStudio}</span>
+                            </div>
+                            <div class="info-group text-right">
+                                <label>WAKTU</label>
+                                <span class="time-highlight">${sch.jamTayang}</span>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <div class="price-container">
+                                <label style="font-size: 9px; color: #666; display: block;">HARGA TIKET</label>
+                                <strong class="price-text">Rp ${harga.toLocaleString("id-ID")}</strong>
+                            </div>
+                            <button class="btn-buy" onclick="openModal('${sch.movie.namaFilm}', '${
+        sch.studio.namaStudio
+      }', '${sch.jamTayang}', ${harga})">
+                                BELI TIKET
+                            </button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
     });
   } catch (error) {
-    console.error("Gagal memuat jadwal:", error);
-    document.getElementById("scheduleGrid").innerHTML =
-      '<p class="text-danger" style="grid-column: 1/-1; text-align: center;">Gagal memuat jadwal tayang. Pastikan backend Java berjalan.</p>';
+    console.error("Gagal load jadwal:", error);
   }
 }
 
-// fungsi untuk load tiket di halaman customer
-async function loadTickets() {
+// load tiket yang udah dipesen sama user
+const loadTickets = async () => {
   try {
     const res = await fetch(`${API_URL}/users/${user.username}/bookings`);
     const result = await res.json();
     const grid = document.getElementById("ticketGrid");
+    grid.innerHTML = "";
 
     if (!result.data || result.data.length === 0) {
       grid.innerHTML =
-        '<p class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 50px; font-size: 1.2rem;">Belum ada tiket yang dibeli.</p>';
+        '<p class="text-muted" style="grid-column: 1/-1; text-align: center; padding: 50px;">Belum ada tiket.</p>';
       return;
     }
 
     grid.innerHTML = result.data
       .map(
         (t) => `
-          <div class="ticket-card">
-              <div class="ticket-header">ADMIT ONE</div>
-              <div class="ticket-body">
-                  <h4>${t.jadwalFilm.movie.namaFilm}</h4>
-                  <p style="color: var(--text-muted); margin-top: 5px;">Studio: ${t.jadwalFilm.studio.namaStudio}</p>
-                  <p style="color: var(--text-muted);">Waktu: ${t.jadwalFilm.jamTayang}</p>
-                  <div class="seat-badge">SEAT: ${t.seat}</div>
-              </div>
-          </div>
-      `
+            <div class="ticket-card">
+                <div class="ticket-header"><span>ADMIT ONE</span></div>
+                <div class="ticket-body">
+                    <h4 style="font-size: 1.4rem; text-transform: uppercase; margin-bottom: 10px;">${t.namaFilm}</h4>
+                    <div style="font-size: 12px; color: #aaa;">
+                        <p><strong>STUDIO:</strong> ${t.namaStudio}</p>
+                        <p><strong>TIME:</strong> ${t.jamTayang}</p>
+                    </div>
+                    <div class="perforation"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <small style="color: #666; font-weight: bold; display: block; font-size: 10px;">SEAT</small>
+                            <div class="seat-number">${t.seat}</div>
+                        </div>
+                        <div class="barcode"></div>
+                    </div>
+                </div>
+            </div>`
       )
       .join("");
   } catch (error) {
-    console.error("Gagal memuat tiket:", error);
-    document.getElementById("ticketGrid").innerHTML =
-      '<p class="text-danger" style="grid-column: 1/-1; text-align: center;">Gagal memuat tiket Anda.</p>';
+    console.error("Gagal load tiket:", error);
   }
-}
+};
 
 function openModal(movie, studio, time, price) {
   document.getElementById("bookMovie").value = movie;
   document.getElementById("bookStudio").value = studio;
   document.getElementById("bookTime").value = time;
   document.getElementById("bookPrice").value = price;
-  document.getElementById("bookSeat").value = "";
-
   document.getElementById("bookingInfo").innerHTML = `
         <p><strong>Film:</strong> ${movie}</p>
-        <p><strong>Studio:</strong> ${studio}</p>
-        <p><strong>Jam:</strong> ${time}</p>
-        <p class="price-highlight"><strong>Harga: Rp ${price.toLocaleString("id-ID")}</strong></p>
-    `;
+        <p><strong>Studio:</strong> ${studio} | <strong>Jam:</strong> ${time}</p>
+        <p style="color: var(--cinematic-yellow); font-size: 1.2rem; margin-top: 10px;"><strong>Harga: Rp ${price.toLocaleString(
+          "id-ID"
+        )}</strong></p>`;
   document.getElementById("bookingModal").classList.remove("hidden");
 }
 
@@ -126,10 +140,10 @@ function closeModal() {
   document.getElementById("bookingModal").classList.add("hidden");
 }
 
+// form submit pesan tiket
 document.getElementById("bookingForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const price = parseInt(document.getElementById("bookPrice").value);
-
   if (user.saldo < price) {
     alert("Saldo tidak mencukupi!");
     return;
@@ -157,13 +171,9 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       closeModal();
       alert("Tiket berhasil dipesan!");
       switchTab("tickets");
-    } else {
-      const result = await res.json();
-      alert(result.message || "Gagal memesan tiket.");
     }
   } catch (error) {
-    console.error("Booking error:", error);
-    alert("Terjadi kesalahan sistem saat memesan tiket.");
+    alert("Terjadi kesalahan sistem.");
   }
 });
 

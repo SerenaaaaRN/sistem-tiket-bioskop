@@ -34,6 +34,10 @@ public class ScheduleRepository {
         schedules.add(sch);
     }
 
+    public void deleteSchedule(Schedule sch) {
+        schedules.remove(sch);
+    }
+
     public List<Schedule> getAllSchedule() {
         return schedules;
     }

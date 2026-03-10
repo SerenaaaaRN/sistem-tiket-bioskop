@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>Customer Dashboard</title>
+    <title>Customer Dashboard - Cinema Ticketing</title>
     <link rel="stylesheet" href="../globals.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -15,6 +15,7 @@
         <button id="logoutBtn" class="btn-sm">LOGOUT</button>
       </div>
     </nav>
+
     <div class="container">
       <div class="tabs">
         <button id="tabBrowse" class="tab-btn active" onclick="switchTab('browse')">Jadwal Tayang</button>
@@ -39,8 +40,11 @@
           <input type="hidden" id="bookStudio" />
           <input type="hidden" id="bookTime" />
           <input type="hidden" id="bookPrice" />
-          <input type="text" id="bookSeat" placeholder="Pilih Kursi (ex: A-1)" required />
-          <button type="submit">BAYAR SEKARANG</button>
+          <div class="input-group">
+            <label for="bookSeat">Nomor Kursi</label>
+            <input type="text" id="bookSeat" placeholder="Contoh: A-1, B-10" required />
+          </div>
+          <button type="submit" class="btn-primary">BAYAR SEKARANG</button>
           <button type="button" class="btn-cancel" onclick="closeModal()">BATAL</button>
         </form>
       </div>

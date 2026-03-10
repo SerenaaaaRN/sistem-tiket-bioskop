@@ -83,7 +83,7 @@
       <!-- Manajemen Film View -->
       <div id="view-manajemen-film" class="view-section hidden">
         <div class="toolbar">
-          <button class="btn-add-film">+ Tambah Film</button>
+          <button class="btn-add-film" onclick="openMovieModal()">+ Tambah Film</button>
         </div>
         <div class="table-container">
           <table>
@@ -108,7 +108,7 @@
       <!-- Jadwal View -->
       <div id="view-jadwal" class="view-section hidden">
         <div class="toolbar">
-          <button class="btn-add" onclick="alert('Fitur tambah jadwal dalam proses pengembangan')">+ Tambah Jadwal</button>
+          <button class="btn-add" onclick="openScheduleModal()">+ Tambah Jadwal</button>
         </div>
         <div class="table-container">
           <table>
@@ -180,6 +180,60 @@
               <tr><td>2</td><td>Avengers</td><td>210</td><td class="text-green fw-600">Rp 10.500.000</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Add Movie Modal -->
+      <div id="movieModal" class="modal hidden">
+        <div class="modal-content">
+          <h3>Tambah Film Baru</h3>
+          <form id="formAddMovie">
+            <div class="form-group">
+              <label>Judul Film</label>
+              <input type="text" id="movieTitle" required />
+            </div>
+            <div class="form-group">
+              <label>Genre</label>
+              <input type="text" id="movieGenre" required />
+            </div>
+            <div class="form-group">
+              <label>Durasi (Menit)</label>
+              <input type="number" id="movieDuration" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn-secondary" onclick="closeMovieModal()">Batal</button>
+              <button type="submit" class="btn-primary" style="background:var(--cinematic-yellow); color:#000; font-weight:bold;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Add Schedule Modal -->
+      <div id="scheduleModal" class="modal hidden">
+        <div class="modal-content">
+          <h3>Tambah Jadwal Tayang</h3>
+          <form id="formAddSchedule">
+            <div class="form-group">
+              <label>Pilih Film</label>
+              <select id="scheduleMovie" required>
+                <!-- populated by JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Pilih Studio</label>
+              <select id="scheduleStudio" required>
+                <!-- populated by JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Jam Tayang (HH:MM)</label>
+              <input type="time" id="scheduleTime" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn-secondary" onclick="closeScheduleModal()">Batal</button>
+              <button type="submit" class="btn-primary" style="background:var(--cinematic-yellow); color:#000; font-weight:bold;">Simpan</button>
+            </div>
+          </form>
         </div>
       </div>
 

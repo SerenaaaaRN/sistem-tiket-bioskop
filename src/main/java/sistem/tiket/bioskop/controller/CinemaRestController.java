@@ -3,6 +3,7 @@ package sistem.tiket.bioskop.controller;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,6 +86,42 @@ public class CinemaRestController {
         }
     }
 
+    public static class TiketDTO {
+        public String username;
+        public String namaFilm;
+        public String namaStudio;
+        public String jamTayang;
+        public String seat;
+        public int harga;
+
+        public TiketDTO(Tiket t) {
+            this.username = t.getUser() != null ? t.getUser().getUsername() : "-";
+            this.namaFilm = t.getJadwalFilm() != null && t.getJadwalFilm().getMovie() != null
+                    ? t.getJadwalFilm().getMovie().getNamaFilm()
+                    : "-";
+            this.namaStudio = t.getJadwalFilm() != null && t.getJadwalFilm().getStudio() != null
+                    ? t.getJadwalFilm().getStudio().getNamaStudio()
+                    : "-";
+            this.jamTayang = t.getJadwalFilm() != null ? t.getJadwalFilm().getJamTayang() : "-";
+            this.seat = t.getSeat();
+            this.harga = t.getHarga();
+        }
+    }
+
+    public static class ScheduleDTO {
+        public Movie movie;
+        public Studio studio;
+        public String jamTayang;
+        public int harga;
+
+        public ScheduleDTO(Schedule s) {
+            this.movie = s.getMovie();
+            this.studio = s.getStudio();
+            this.jamTayang = s.getJamTayang();
+            this.harga = s.getHarga(); // Logic is now in the Model!
+        }
+    }
+
     // Helper untuk standarisasi response
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message, Object data) {
         Map<String, Object> response = new HashMap<>();
@@ -145,7 +182,9 @@ public class CinemaRestController {
 
     @GetMapping("/schedules")
     public ResponseEntity<?> getSchedules() {
-        return buildResponse(HttpStatus.OK, "Berhasil mengambil jadwal tayang", scheduleController.getAllSchedules());
+        List<Schedule> tickets = scheduleController.getAllSchedules();
+        List<ScheduleDTO> dtoList = tickets.stream().map(ScheduleDTO::new).collect(Collectors.toList());
+        return buildResponse(HttpStatus.OK, "Berhasil mengambil jadwal tayang", dtoList);
     }
 
     @PostMapping("/schedules")
@@ -164,6 +203,15 @@ public class CinemaRestController {
             return buildResponse(HttpStatus.CREATED, "Jadwal berhasil ditambahkan", null);
         }
         return buildResponse(HttpStatus.CONFLICT, "Jadwal bentrok / gagal ditambahkan", null);
+    }
+
+    @DeleteMapping("/schedules")
+    public ResponseEntity<?> deleteSchedule(@RequestBody ScheduleReq req) {
+        boolean success = scheduleController.deleteSchedule(req.namaFilm, req.namaStudio, req.jamTayang);
+        if (success) {
+            return buildResponse(HttpStatus.OK, "Jadwal berhasil dihapus", null);
+        }
+        return buildResponse(HttpStatus.NOT_FOUND, "Jadwal tidak ditemukan", null);
     }
 
     // ================= BOOKING =================
@@ -199,7 +247,15 @@ public class CinemaRestController {
     @GetMapping("/users/{username}/bookings")
     public ResponseEntity<?> getUserBookings(@PathVariable String username) {
         List<Tiket> tiketList = bookingController.getTiketByUsername(username);
-        return buildResponse(HttpStatus.OK, "Berhasil mengambil riwayat tiket", tiketList);
+        List<TiketDTO> dtoList = tiketList.stream().map(TiketDTO::new).collect(Collectors.toList());
+        return buildResponse(HttpStatus.OK, "Berhasil mengambil riwayat tiket", dtoList);
+    }
+
+    @GetMapping("/tickets")
+    public ResponseEntity<?> getAllTickets() {
+        List<Tiket> tiketList = tiketRepo.getAllTiket();
+        List<TiketDTO> dtoList = tiketList.stream().map(TiketDTO::new).collect(Collectors.toList());
+        return buildResponse(HttpStatus.OK, "Berhasil mengambil semua riwayat tiket", dtoList);
     }
 
     // ================= USER ===============
@@ -215,5 +271,14 @@ public class CinemaRestController {
             return buildResponse(HttpStatus.CREATED, "Registrasi berhasil", null);
         }
         return buildResponse(HttpStatus.BAD_REQUEST, "Username sudah digunakan", null);
+    }
+
+    @DeleteMapping("/users/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        boolean success = userRepo.deleteUser(username);
+        if (success) {
+            return buildResponse(HttpStatus.OK, "User berhasil dihapus", null);
+        }
+        return buildResponse(HttpStatus.NOT_FOUND, "User tidak ditemukan", null);
     }
 }

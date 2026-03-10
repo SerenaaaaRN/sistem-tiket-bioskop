@@ -118,7 +118,7 @@ const fetchSchedules = async () => {
 
 const fetchTickets = async () => {
   try {
-    const res = await fetch(`${API_BASE_URL}/users/${user.username}/bookings`);
+    const res = await fetch(`${API_BASE_URL}/tickets`);
     const json = await res.json();
     if (json.data) {
       renderTickets(json.data);
@@ -196,8 +196,8 @@ const renderSchedules = (schedules) => {
         <td>${s.studio ? s.studio.namaStudio : "-"}</td>
         <td>-</td> <!-- Asumsi tanggal tidak ada di response model untuk sekarang -->
         <td class="text-blue fw-500">${s.jamTayang}</td>
-        <td class="text-green fw-600">Rp 50.000</td>
-        <td><button class="btn-delete">Hapus</button></td>
+        <td class="text-green fw-600">Rp ${s.harga ? s.harga.toLocaleString('id-ID') : 0}</td>
+        <td><button class="btn-delete" onclick="deleteSchedule('${s.movie ? s.movie.namaFilm : ""}', '${s.studio ? s.studio.namaStudio : ""}', '${s.jamTayang}')">Hapus</button></td>
       </tr>
     `;
   });
@@ -214,12 +214,10 @@ const renderTickets = (tickets) => {
     html += `
       <tr>
         <td>${idx + 1}</td>
-        <td class="fw-600 text-yellow">${t.movie ? t.movie.namaFilm : "-"}</td>
-        <td>${t.studio ? t.studio.namaStudio : "-"}</td>
-        <td>-</td> <!-- Asumsi tanggal tidak ada di response model untuk sekarang -->
-        <td class="text-blue fw-500">${t.jamTayang}</td>
-        <td class="text-green fw-600">Rp 50.000</td>
-        <td><button class="btn-delete">Hapus</button></td>
+        <td class="fw-500 text-yellow">${t.username}</td>
+        <td class="fw-600">${t.namaFilm} <br> <small class="text-muted">${t.namaStudio} - ${t.seat}</small></td>
+        <td class="text-green fw-600">Rp ${t.harga.toLocaleString('id-ID')}</td>
+        <td>-</td>
       </tr>
     `;
   });
@@ -236,10 +234,10 @@ const renderUsers = (users) => {
     html += `
       <tr>
         <td>${idx + 1}</td>
-        <td>${u.username}</td>
-        <td>${u.saldo}</td>
-        <td>${u.status}</td>
-        <td><button class="btn-delete">Suspend</button></td>
+        <td>${u.username} <span class="badge" style="font-size:0.75rem; margin-left:5px; background:var(--cinematic-yellow); color:#000;">${u.role}</span></td>
+        <td class="text-green">Rp ${u.saldo ? u.saldo.toLocaleString('id-ID') : 0}</td>
+        <td>Aktif</td>
+        <td><button class="btn-delete" onclick="deleteUser('${u.username}')">Suspend</button></td>
       </tr>
     `;
   });
@@ -249,14 +247,14 @@ const renderUsers = (users) => {
 
 
 
-const  deleteMovie = async (namaFilm) => {
+const deleteMovie = async (namaFilm) => {
   if (confirm(`Hapus film ${namaFilm}?`)) {
     try {
       const res = await fetch(`${API_BASE_URL}/movies/${namaFilm}`, { method: "DELETE" });
       const json = await res.json();
       if (res.ok) {
         alert("Film dihapus!");
-        fetchMovies(); // Reload
+        fetchMovies(); 
       } else {
         alert("Gagal menghapus: " + json.message);
       }
@@ -266,7 +264,138 @@ const  deleteMovie = async (namaFilm) => {
   }
 }
 
+const deleteSchedule = async (namaFilm, namaStudio, jamTayang) => {
+  if (confirm(`Hapus jadwal ${namaFilm} di ${namaStudio} jam ${jamTayang}?`)) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/schedules`, { 
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ namaFilm, namaStudio, jamTayang })
+      });
+      const json = await res.json();
+      if (res.ok) {
+        alert("Jadwal dihapus!");
+        fetchSchedules(); 
+      } else {
+        alert("Gagal menghapus: " + json.message);
+      }
+    } catch (err) { console.error(err); }
+  }
+}
+
+const deleteUser = async (username) => {
+  if (confirm(`Suspend / Hapus user ${username}?`)) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${username}`, { method: "DELETE" });
+      const json = await res.json();
+      if (res.ok) {
+        alert("User dihapus!");
+        fetchUsers(); 
+      } else {
+        alert("Gagal menghapus: " + json.message);
+      }
+    } catch (err) { console.error(err); }
+  }
+}
+
 function updateDashboardStat(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+// --- MODALS ---
+function openMovieModal() {
+  document.getElementById("movieModal").classList.remove("hidden");
+}
+function closeMovieModal() {
+  document.getElementById("movieModal").classList.add("hidden");
+  const frm = document.getElementById("formAddMovie");
+  if(frm) frm.reset();
+}
+
+async function openScheduleModal() {
+  try {
+    const resM = await fetch(`${API_BASE_URL}/movies`);
+    const jsonM = await resM.json();
+    const selM = document.getElementById("scheduleMovie");
+    selM.innerHTML = "";
+    if (jsonM.data) {
+      jsonM.data.forEach(m => {
+        selM.innerHTML += `<option value="${m.namaFilm}">${m.namaFilm}</option>`;
+      });
+    }
+
+    const resS = await fetch(`${API_BASE_URL}/studios`);
+    const jsonS = await resS.json();
+    const selS = document.getElementById("scheduleStudio");
+    selS.innerHTML = "";
+    if (jsonS.data) {
+      jsonS.data.forEach(s => {
+        selS.innerHTML += `<option value="${s.namaStudio}">${s.namaStudio} (${s.tipeStudio})</option>`;
+      });
+    }
+
+    document.getElementById("scheduleModal").classList.remove("hidden");
+  } catch(e) { console.error(e); }
+}
+
+function closeScheduleModal() {
+  document.getElementById("scheduleModal").classList.add("hidden");
+  const frm = document.getElementById("formAddSchedule");
+  if(frm) frm.reset();
+}
+
+// Form logic hooks
+const formAddMovie = document.getElementById("formAddMovie");
+if(formAddMovie) {
+  formAddMovie.addEventListener("submit", async(e) => {
+    e.preventDefault();
+    const payload = {
+      namaFilm: document.getElementById("movieTitle").value,
+      durasi: parseInt(document.getElementById("movieDuration").value),
+      genre: document.getElementById("movieGenre").value
+    };
+    try {
+      const res = await fetch(`${API_BASE_URL}/movies`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if(res.ok) {
+        alert("Film berhasil ditambahkan!");
+        closeMovieModal();
+        fetchMovies();
+      } else {
+        alert(json.message);
+      }
+    } catch(e) { console.error(e); }
+  });
+}
+
+const formAddSchedule = document.getElementById("formAddSchedule");
+if(formAddSchedule) {
+  formAddSchedule.addEventListener("submit", async(e) => {
+    e.preventDefault();
+    const payload = {
+      namaFilm: document.getElementById("scheduleMovie").value,
+      namaStudio: document.getElementById("scheduleStudio").value,
+      jamTayang: document.getElementById("scheduleTime").value
+    };
+    try {
+      const res = await fetch(`${API_BASE_URL}/schedules`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if(res.ok) {
+        alert("Jadwal berhasil ditambahkan!");
+        closeScheduleModal();
+        fetchSchedules();
+      } else {
+        alert(json.message);
+      }
+    } catch(e) { console.error(e); }
+  });
 }

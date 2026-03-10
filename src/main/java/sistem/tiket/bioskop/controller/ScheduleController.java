@@ -40,4 +40,19 @@ public class ScheduleController {
     public List<Schedule> getAllSchedules() {
         return schRepo.getAllSchedule();
     }
+
+    public boolean deleteSchedule(String namaFilm, String namaStudio, String jamTayang) {
+        Schedule target = schRepo.getAllSchedule().stream()
+                .filter(s -> s.getMovie().getNamaFilm().equalsIgnoreCase(namaFilm) &&
+                        s.getStudio().getNamaStudio().equalsIgnoreCase(namaStudio) &&
+                        s.getJamTayang().equalsIgnoreCase(jamTayang))
+                .findFirst()
+                .orElse(null);
+
+        if (target != null) {
+            schRepo.deleteSchedule(target);
+            return true;
+        }
+        return false;
+    }
 }

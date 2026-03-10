@@ -3,11 +3,16 @@ let isLoginMode = true;
 document.getElementById("toggleAuth").addEventListener("click", (e) => {
   e.preventDefault();
   isLoginMode = !isLoginMode;
-  document.getElementById("authTitle").textContent = isLoginMode ? "CINEMA LOGIN" : "REGISTER ACCOUNT";
-  document.getElementById("submitBtn").textContent = isLoginMode ? "ENTER" : "DAFTAR";
-  document.getElementById("toggleAuth").textContent = isLoginMode
-    ? "Belum punya akun? Daftar disini"
-    : "Sudah punya akun? Login";
+
+  document.getElementById("authTitle").textContent = isLoginMode ? "Login to your account" : "Create an account";
+  document.getElementById("authSubtitle").textContent = isLoginMode
+    ? "Enter your email below to login to your account"
+    : "Enter your details below to create your account";
+  document.getElementById("submitBtn").textContent = isLoginMode ? "Login" : "Sign up";
+  document.getElementById("toggleText").textContent = isLoginMode
+    ? "Don't have an account?"
+    : "Already have an account?";
+  document.getElementById("toggleAuth").textContent = isLoginMode ? "Sign up" : "Login";
 
   if (isLoginMode) {
     document.getElementById("registerFields").classList.add("hidden");
@@ -32,9 +37,7 @@ document.getElementById("authForm").addEventListener("submit", async (e) => {
       const result = await res.json();
 
       if (res.ok) {
-        // Simpan data asli dari backend ke localstorage (saldo sekarang datang dari DTO Java)
         const userData = result.data;
-
         localStorage.setItem("user", JSON.stringify(userData));
         window.location.href = userData.role === "admin" ? "../admin/dashboard.html" : "../customer/customer.html";
       } else {
@@ -54,7 +57,7 @@ document.getElementById("authForm").addEventListener("submit", async (e) => {
       if (res.ok) {
         errorMsg.textContent = "Registrasi sukses! Silakan login.";
         errorMsg.className = "error text-success";
-        document.getElementById("toggleAuth").click(); // switch ke login
+        document.getElementById("toggleAuth").click();
       } else {
         errorMsg.textContent = result.message || "Registrasi gagal";
         errorMsg.className = "error text-danger";
