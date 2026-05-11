@@ -8,9 +8,6 @@ Sistem Ticketing Bioskop adalah platform manajemen tiket bioskop yang dengan kon
 
 ---
 
-![Landing Page](assets/landing_page.png)
-
-
 ## 🚀 Fitur Utama
 
 ### 👤 Pengguna (Customer)
