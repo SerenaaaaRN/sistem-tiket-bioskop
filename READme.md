@@ -1,6 +1,9 @@
 # Sistem Ticketing Bioskop
 
-Sistem Ticketing Bioskop adalah platform manajemen tiket bioskop yang dirancang dengan design **Brutalist Dark**. Proyek ini menggabungkan backend berbasis Java Spring Boot dengan frontend menggunakan Vanilla HTML/CSS/JS.
+Sistem Ticketing Bioskop adalah platform manajemen tiket bioskop yang dengan konsep OOP pada java. Proyek ini juga menggunakan framework Java Spring Boot untuk membangun backend dengan RESTful API dan frontend menggunakan Vanilla HTML/CSS/JS.
+
+![Landing Page](assets/landing_page.png)
+
 
 ![Landing Page](assets/landing_page.png)
 
