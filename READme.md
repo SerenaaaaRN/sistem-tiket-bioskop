@@ -2,6 +2,9 @@
 
 Sistem Ticketing Bioskop adalah platform manajemen tiket bioskop yang dirancang dengan design **Brutalist Dark**. Proyek ini menggabungkan backend berbasis Java Spring Boot dengan frontend menggunakan Vanilla HTML/CSS/JS.
 
+![Landing Page](assets/landing_page.png)
+
+
 ## 🚀 Fitur Utama
 
 ### 👤 Pengguna (Customer)
@@ -95,7 +98,7 @@ Berikut adalah tampilan antarmuka dari Absolute Cinema:
 
 |               Landing Page               |                Halaman Login                 |
 | :--------------------------------------: | :------------------------------------------: |
-| ![Landing Page](assets/cover_depan.png)  |     ![Login Page](assets/login_page.png)     |
+| ![Landing Page2](assets/lp2.png)  |     ![Login Page](assets/login_page.png)     |
 |           **Admin Dashboard**            |             **Customer Portal**              |
 | ![Admin Dashboard](assets/dashboard.png) | ![Customer Portal](assets/customer_page.png) |
 
